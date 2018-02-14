@@ -12,6 +12,10 @@ const SensorSchema = new Schema({
   sensor_is_user_property: {
     type: Boolean,
     default: false
+  },
+  is_functional: {
+    type: Boolean,
+    default: true
   }
 });
 
