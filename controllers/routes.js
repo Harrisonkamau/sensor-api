@@ -11,6 +11,23 @@ router.get('/', (req, res) => {
   });
 });
 
+// GET: /api/sensors
+router.get('/sensors', (req, res) => {
+  _dbQuery(Sensor).then((result) => {
+    res.json(result);
+  });
+})
+
+// GET: /api/users
+// TODO
+
+// GET: /api/allocations
+router.get('/allocations', (req, res) => {
+  _dbQuery(Allocation).then((result) => {
+    res.json(result);
+  })
+})
+
 // POST: /api/user
 router.post('/user', (req, res) => {
   // user instance
@@ -40,7 +57,7 @@ router.post('/user', (req, res) => {
   })
 
 
-});
+})
 
 // POST: /api/sensor
 router.post('/sensor', (req, res) => {
@@ -72,6 +89,45 @@ router.post('/sensor', (req, res) => {
     })
   })
 
+})
+
+// POST: /api/allocations
+router.post('/allocations', (req, res) => {
+  // allocation instance
+  var allocation = new Allocation();
+  allocation.workout_id = req.body.workout_id;
+  var participants = req.body.participants;
+  var idsArray = [];
+
+  _dbQuery(User).then((result) => {
+    result.forEach((user) => {
+      idsArray.push(String(user._id));
+    })
+
+    participants.forEach((user_id) => {
+      if(idsArray.includes(user_id) == true){
+        Sensor.findOne({"is_allocatable": true}, { "is_functional": true}, (err, data) => {
+          if(err) throw err;
+          allocation.user_id = user_id;
+          allocation.sensor_id = data._id;
+          Allocation.create(allocation, (err, result) => {
+            console.log(result);
+          })
+          Sensor.findByIdAndUpdate(data._id, {"is_allocatable": false}, (err, data) => {
+            res.json({
+              message: data
+            })
+          })
+        })
+      }
+      else {
+        console.log('sorry');
+      }
+  
+    })
+
+
+  })
 })
 
 // Private methods
