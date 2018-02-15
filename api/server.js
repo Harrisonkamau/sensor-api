@@ -6,7 +6,6 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 const path = require('path');
-const cors = require('cors');
 
 // Local imports
 let config = require('./config/config');
@@ -27,9 +26,23 @@ const app = express();
 
 // middleware
 app.use(morgan('dev'));
-app.use(cors({credentials: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.all('/*', function (req, res, next) {
+  // CORS headers
+  res.header("Access-Control-Allow-Origin", "*"); // restrict it to the required domain
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  // Set custom headers for CORS
+  res.header('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
+  if (req.method == 'OPTIONS') {
+    res.status(200).end();
+  } else {
+    next();
+  }
+});
+
+app.all('/api/*', [require('./middlewares/validateRequest')]);
 
 // serve the routes
 app.use('/api', index);

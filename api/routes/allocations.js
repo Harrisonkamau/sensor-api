@@ -1,5 +1,4 @@
 const express = require('express');
-const async = require('async');
 let router = express.Router();
 let _dbQuery = require('./index')._dbQuery;
 let Allocation = require('../models/allocation');
