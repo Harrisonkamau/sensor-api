@@ -3,8 +3,7 @@ const Schema = mongoose.Schema;
 
 // sensor Schema
 const SensorSchema = new Schema({
-  sensor_id: mongoose.Schema.Types.ObjectId,
-  serial_number: String,
+  serial_number: { type: String, index: true, unique: true },
   is_allocatable: {
     type: Boolean,
     default: true
