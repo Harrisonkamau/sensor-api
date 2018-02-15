@@ -3,8 +3,7 @@ const Schema = mongoose.Schema;
 
 // Allocation Schema
 const AllocationSchema = new Schema({
-  _id: mongoose.Schema.Types.ObjectId,
-  user_id: { type: Schema.Types.ObjectId, ref: 'User' },
+  user_id: { type: Schema.Types.Number, ref: 'User' },
   sensor_id: { type: Schema.Types.ObjectId, ref: 'Sensor' },
   workout_id: Number
 })
